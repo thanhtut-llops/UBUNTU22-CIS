@@ -1,0 +1,22 @@
+---
+  - name: install chrony
+    apt:
+            name: chrony
+            state: latest
+    when:  "'chrony' not in ansible_facts.packages"
+
+  - name: set chrony ntp config
+    template:
+            src: chrony.conf.j2
+            dest: /etc/chrony/chrony.conf
+            owner: root
+            group: root
+            mode: 0644
+            backup: yes
+
+
+  - name: enable chrony
+    systemd:
+            name: chrony.service
+            state: restarted
+            enabled: yes

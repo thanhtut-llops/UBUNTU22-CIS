@@ -1,0 +1,36 @@
+---
+- hosts: all
+  become: true
+#  vars:
+#    - list_type: all
+#    - reboot_confirmation: yes  
+  tasks:
+    - name: update cache
+      apt: 
+        update_cache: yes
+        force_apt_get: yes
+    
+    - block:
+        - name: list all updates
+          shell:
+            cmd: apt list --upgradable
+          register: all_upgradeable
+        - debug:
+            var: all_upgradeable.stdout_lines
+
+      when: list_type == "all"
+
+    - block:
+        - name: Make a copy of security repos
+          shell: cat /etc/apt/sources.list|grep secu >/etc/apt/security.sources.list
+ 
+        - name: Update cache
+          apt: update_cache=yes
+        
+        - name: list security updates
+          shell:
+             cmd:  apt list --upgradable
+          register: sec_upgrades
+        - debug:
+             var: sec_upgrades.stdout_lines
+      when: list_type == "security"

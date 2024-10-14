@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+  ignore_errors: true
+#  vars:
+#    - reboot_confirmation: false
+
+  roles:
+    - role: prasac-ubuntu
+

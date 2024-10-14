@@ -1,0 +1,18 @@
+---
+- name: "Ensure password expiration is {{ MAXDAYS }}"
+  lineinfile:
+      path: /etc/login.defs
+      regexp: '^PASS_MAX_DAYS'
+      line: "PASS_MAX_DAYS {{ MAXDAYS }}"
+
+- name: " Ensure minimum days between password changes is {{ MINDAYS }} "
+  lineinfile:
+      path: /etc/login.defs
+      regexp: '^PASS_MIN_DAYS'
+      line: "PASS_MIN_DAYS {{ MINDAYS }}"
+
+- name: " Ensure password expiration warning days is {{ WARNDAYS }}"
+  lineinfile:
+      path: /etc/login.defs
+      regexp: '^PASS_WARN_AGE'
+      line: "PASS_WARN_AGE {{ WARNDAYS }}"

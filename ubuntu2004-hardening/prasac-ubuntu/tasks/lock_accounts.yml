@@ -1,0 +1,9 @@
+---
+- name: Lock specified accounts
+  user:
+    name: "{{ item }}"
+    state: present
+    password_lock: true
+    shell: "/sbin/nologin"
+  register: locked_accounts
+  loop: "{{ lock_accounts }}"

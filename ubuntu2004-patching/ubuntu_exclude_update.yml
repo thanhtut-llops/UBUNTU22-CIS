@@ -1,0 +1,85 @@
+---
+- hosts: all
+  become: true
+  vars:
+    #- upgrade_type: all
+    #- exclude_packages: "xxd zlib1g" 
+    #- reboot_confirmation: yes  
+  tasks:
+    - name: update cache
+      apt: 
+        update_cache: yes
+        force_apt_get: yes
+    
+    - block:
+        - name: exclude packages from upgrade
+          shell:
+            cmd: "apt-mark hold {{ exclude_packages|replace(',','') }}" 
+        - name: Show excluded packages
+          shell:
+            cmd: apt-mark showhold
+          register: marked_packages
+        - debug:
+            msg: " Following packages will not be upgraded {{ marked_packages.stdout_lines }}" 
+      when: exclude_packages != ''
+    
+    - block:
+        - name: Upgrade all packages on servers
+          apt:
+            upgrade: dist
+            force_apt_get: yes
+          register: upgrade_package_check
+  
+        - debug:
+            var: upgrade_package_check.stdout_lines
+  
+      when: upgrade_type == 'all'
+    - block: 
+        - name: Make a copy of security repos
+          shell: cat /etc/apt/sources.list|grep secu >/etc/apt/security.sources.list
+
+        - name: Update cache
+          apt: update_cache=yes
+
+        - name: Install security updates
+          shell: apt-get dist-upgrade -oDir::Etc::SourceList=/etc/apt/security.sources.list --force-yes -y
+          register: sec_upgrade
+        - debug:
+            var:  sec_upgrade.stdout_lines
+      when: upgrade_type == 'security'
+
+
+    - block:
+        - name: Remove exclude mark from  packages 
+          shell:
+            cmd: "apt-mark unhold {{  exclude_packages|replace(',','') }}"
+        - name: Show excluded packages
+          shell:
+            cmd: apt-mark showhold
+          register: marked_packages
+        - debug:
+            msg: " Following packages are still excluded from  future upgrade {{ marked_packages.stdout_lines }}"
+      when: exclude_packages != ''
+    - block:
+        - name: check if a reboot is required for Ubuntu
+          stat:
+            path: /var/run/reboot-required
+            get_md5: no
+          register: reboot_required_file
+
+        - name: display result
+          debug:
+            msg: "System reboot is required!"
+          when: reboot_required_file.stat.exists
+          changed_when: reboot_required_file.stat.exists
+        - name: Reboot Server  if kernel is updated
+          reboot:
+            msg: "Reboot initiated by Ansible for kernel updates"
+            connect_timeout: 5
+            reboot_timeout: 300
+            pre_reboot_delay: 0
+            post_reboot_delay: 30
+            test_command: uptime
+          when: reboot_required_file.stat.exists
+      when: reboot_confirmation == 'yes'
+

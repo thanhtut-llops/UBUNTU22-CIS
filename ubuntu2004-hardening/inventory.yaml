@@ -1,0 +1,10 @@
+---
+ubuntu22: 
+  hosts: 
+    ubuntu-an.example.com: 
+      ansible_port: 22 
+      ansible_user: ansible
+      ansible_ssh_pass: ansible000
+      ansible_host: 192.168.122.14
+      ansible_become_pass: ansible000
+

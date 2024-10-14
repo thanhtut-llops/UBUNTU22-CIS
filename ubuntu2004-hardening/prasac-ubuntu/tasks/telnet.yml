@@ -1,0 +1,9 @@
+---
+#- name: fix packages
+#  shell:
+#    cmd:  apt --fix-broken install -y
+- name: Ensure telnet package is removed
+  apt:
+    name: telnet
+    state:  absent
+  when: "'telnet' in ansible_facts.packages"

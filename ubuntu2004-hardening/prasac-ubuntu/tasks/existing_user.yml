@@ -1,0 +1,22 @@
+---
+- name: Gather existing  user's list
+  getent:
+    database: passwd
+    split: ':'
+  register: get_entpasswd
+#- debug:
+#    msg:  "{{ item }}"
+#  loop:  "{{ getent_passwd.keys() | list }}"
+#  when:
+#    - item != "root"
+#    - item != "asif"
+#    - item != "ansible"
+- name: Set Password  policy for existing  users
+  shell:
+    " chage -M {{ MAXDAYS }}  -m {{ MINDAYS }} -W {{ WARNDAYS }}  {{ item }} "
+  loop:  "{{ getent_passwd.keys() | list }}"
+  when:
+    - item != "root"
+    - item != "ansible"
+    - item != "student"
+

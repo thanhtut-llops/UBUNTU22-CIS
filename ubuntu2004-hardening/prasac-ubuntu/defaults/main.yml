@@ -1,0 +1,25 @@
+---
+# defaults file for prasac-ubuntu
+  MAXDAYS: 90
+  MINDAYS: 0
+  WARNDAYS: 7
+  PASSLENGTH: 8
+  HISTORY: 3
+  #MINDIFF: 3
+  #MINUPPER: 1
+  #MINLOWER: 1
+  #MINSPECIAL: 1
+  RETRIES: 3
+#  LOCK_AFTER_RETRIES: YES
+  UNLOCK_AFTER: 1800
+  ssh_clientalive: 30
+  ssh_clientcount: 0
+  NTP_SERVER_1: '192.168.110.66'
+  NTP_SERVER_2: '192.168.120.66'
+  TZone: 'Asia/Phnom_Penh'
+
+  lock_accounts:
+    - operator
+    - lp
+    - games
+    - nobody

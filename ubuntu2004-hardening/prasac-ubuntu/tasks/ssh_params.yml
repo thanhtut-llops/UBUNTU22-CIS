@@ -1,0 +1,23 @@
+---
+- name: modify ssh  config
+  lineinfile:
+    create: yes
+    path: /etc/ssh/sshd_config
+    regexp: '^ClientAliveInterval'
+    line:  'ClientAliveInterval {{ ssh_clientalive }}'
+    state: present
+
+- name: Modify ssh config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^ClientAliveCountMax'
+    line: 'ClientAliveCountMax {{ ssh_clientcount }}'
+    state: present
+
+
+- name: Restart ssh  service to apply changes
+  systemd:
+    name: ssh.service
+    state:  restarted
+    enabled: yes
+

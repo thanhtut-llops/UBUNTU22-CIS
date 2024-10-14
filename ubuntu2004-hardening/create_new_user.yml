@@ -1,0 +1,13 @@
+---
+- hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: create new user
+      ansible.builtin.user:
+        name: "{{ username }}"
+        password: "{{ passwd | password_hash('sha512') }}"
+        update_password: on_create
+
+    - name: Force user to change password first login
+      ansible.builtin.shell: "chage -d0 {{ username }}"

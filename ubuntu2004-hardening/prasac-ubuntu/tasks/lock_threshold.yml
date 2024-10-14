@@ -1,0 +1,8 @@
+---
+- name: "Ensure Account is locked after 3 consecutive failed login attempts"
+  lineinfile:
+      path: /etc/pam.d/common-auth
+      insertbefore: BOF
+      line: "auth    required           pam_tally2.so onerr=fail deny={{ RETRIES }} unlock_time={{ UNLOCK_AFTER }}  audit even_deny_root root_unlock_time={{ UNLOCK_AFTER }}"
+      state: present
+

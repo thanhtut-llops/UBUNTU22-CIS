@@ -1,0 +1,37 @@
+---
+# tasks file for prasac-ubuntu
+- import_tasks: preflight.yml
+  become: true
+  
+- name: Gather the package facts
+  package_facts:
+      manager: auto
+- import_tasks: update_cache.yml
+  become: true
+
+- import_tasks: login-params.yml
+  become: true
+
+- import_tasks: existing_user.yml
+  become: true
+
+- import_tasks: minlen.yml
+  become: true
+
+- import_tasks: lock_accounts.yml
+  become: true
+
+- import_tasks: lock_threshold.yml
+  become: true
+
+- import_tasks: telnet.yml
+  become: true
+
+- import_tasks: ssh_params.yml
+  become: true
+
+- import_tasks: ntp.yml
+  become: true
+
+- import_tasks: remember_passwords.yml
+  become: true
